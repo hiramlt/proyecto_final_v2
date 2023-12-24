@@ -17,12 +17,12 @@ router.post('/auth/register', async (req, res) => {
     const { first_name, last_name, email, password, age } = req.body;
 
     if (!first_name || !last_name || !email || !password) {
-        return res.status(400).json({ error: 'Faltan campos requeridos' });
+        return res.status(400).render('error', { title: 'Error', errorMsg: 'Faltan campos requeridos' });
     }
 
     let user = await UserManager.getByEmail(email);
     if (user) {
-        return res.status(400).json({ error: 'Usuario ya registrado' });
+        return res.status(400).render('error', { title: 'Error', errorMsg: 'Usuario ya registrado' });
     }
 
     const cart = await CartManager.create();
