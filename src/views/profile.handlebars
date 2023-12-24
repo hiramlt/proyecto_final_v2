@@ -1,0 +1,18 @@
+<section style="display: flex; justify-content: space-between; align-items: start; width: 25%;">
+    <a href="#" onclick="history.go(-1)">
+        <svg style="margin-top: 0.85em;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36"><path d="M10.8284 12.0007L15.7782 16.9504L14.364 18.3646L8 12.0007L14.364 5.63672L15.7782 7.05093L10.8284 12.0007Z" fill="rgba(255,255,255,1)"></path></svg>
+    </a>
+    <h1>Mi perfil</h1>
+</section>
+
+<article>
+    <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+    <hr>
+    <strong>Correo: </strong> {{ user.email }} <br>
+    <strong>Edad: </strong> 
+        {{#if user.age}}
+            {{ user.age }} años
+        {{else}}
+            N/A    
+        {{/if}}
+</article>
