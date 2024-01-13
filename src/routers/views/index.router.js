@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { isAuth } from '../../utils.js';
 import config from '../../config/config.js';
-import ProductManager from '../../dao/products.manager.js';
-import CartManager from '../../dao/carts.manager.js';
+import ProductsController from '../../controllers/products.controller.js';
+import CartsController from '../../controllers/carts.controller.js';
 
 const router = Router();
 
@@ -18,17 +18,24 @@ router.get('/profile', isAuth('views'), (req, res) => {
     res.render('profile', { title: 'Mi perfil', user: req.user });
 });
 
-router.get('/products', isAuth('views'), async (req, res) => {
-    const { limit, page, sort, query } = req.query;
-    const products = await ProductManager.get({ limit, page, sort, query }, `http://localhost:${config.port}/products`);
-    res.render('products', { title: "Productos", ...products, user: req.user } )
+router.get('/products', isAuth('views'), async (req, res, next) => {
+    try {
+        const products = await ProductsController.get(req.query, `http://localhost:${config.port}/products`);
+        res.render('products', { title: "Productos", ...products, user: req.user } );
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.get('/cart', isAuth('views'), async (req, res) => {
+router.get('/cart', isAuth('views'), async (req, res, next) => {
     const user = req.user;
     const cid = user.cart;
-    const cart = await CartManager.getById(cid);
-    res.render('cart', { title: "Mi carrito", products: cart.products.map(product => product.toJSON()) });
+    try {
+        const cart = await CartsController.getById(cid);
+        res.render('cart', { title: "Mi carrito", products: cart.products.map(product => product.toJSON()) });
+    } catch (error) {
+        next(error);
+    }
 });
 
 export default router;

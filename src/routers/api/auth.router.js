@@ -1,61 +1,31 @@
 import { Router } from 'express';
-import UserManager from '../../dao/users.manager.js';
-import CartManager from '../../dao/carts.manager.js';
-import { createHash, createToken, isValidPassword, isAuth } from '../../utils.js';
+import { isAuth } from '../../utils.js';
+import AuthController from '../../controllers/auth.controller.js';
 
 const router = Router();
 
-const admin = {
-    first_name: 'admin',
-    last_name: 'coder',
-    email: 'adminCoder@coder.com',
-    password: 'adminCod3r123',
-    role: 'admin'
-}
-
-router.post('/auth/register', async (req, res) => {
-    const { first_name, last_name, email, password, age } = req.body;
-
-    if (!first_name || !last_name || !email || !password) {
-        return res.status(400).render('error', { title: 'Error', errorMsg: 'Faltan campos requeridos' });
+router.post('/auth/register', async (req, res, next) => {
+    const { body } = req;
+    try {
+        await AuthController.register(body);
+        res.status(201).redirect('/login');
+    } catch (error) {
+        next(error);
     }
-
-    let user = await UserManager.getByEmail(email);
-    if (user) {
-        return res.status(400).render('error', { title: 'Error', errorMsg: 'Usuario ya registrado' });
-    }
-
-    const cart = await CartManager.create();
-
-    user = await UserManager.create({
-        first_name,
-        last_name,
-        email,
-        password: createHash(password),
-        age,
-        cart: cart._id,
-    })
-
-    res.status(201).redirect('/login');
 });
 
-router.post('/auth/login', async (req, res) => {
+router.post('/auth/login', async (req, res, next) => {
     const { email, password } = req.body;
-
-    if (email === admin.email && password === admin.password) {
-        const token = createToken(admin);
+    try {
+        const token = await AuthController.login(email, password);
         return res.cookie('access_token', token, { maxAge: 1000*60*30, httpOnly: true, signed: true })
         .status(200).redirect('/products');
+    } catch (error) {
+        if (error.statusCode === 401) {
+            return res.status(401).render('error', { title: 'Error', errorMsg: error.message });
+        }
+        next(error);
     }
-
-    const user = await UserManager.getByEmail(email);
-    if (user && isValidPassword(password, user.password)) {
-        const token = createToken(user);
-        return res.cookie('access_token', token, { maxAge: 1000*60*30, httpOnly: true, signed: true })
-        .status(200).redirect('/products');
-    }
-
-    res.status(401).render('error', { title: 'Error', errorMsg: 'Correo o contraseña invalidos' });
 });
 
 router.get('/auth/me', isAuth('api'), async (req, res) => {

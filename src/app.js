@@ -5,7 +5,7 @@ import handlebars from 'express-handlebars';
 import morgan from 'morgan';
 import path from 'path';
 import config from './config/config.js';
-import { __dirname } from './utils.js';
+import { Exception, __dirname } from './utils.js';
 import { initPassport } from './config/passport.config.js';
 
 import indexRouter from './routers/views/index.router.js';
@@ -32,7 +32,9 @@ app.use('/', indexRouter);
 app.use('/api', authRouter, productsRouter, cartsRouter);
 
 app.use((error, req, res, next) => {
-    res.status(500).json({ error: `Ocurrio un error desconocido: ${error.message}` })
+    const err_msg = error instanceof Exception ? error.message : `Ocurrio un error desconocido: ${error.message}`
+    res.status(error.statusCode || 500).json({ error: err_msg })
+    next();
 })
 
 export default app;
