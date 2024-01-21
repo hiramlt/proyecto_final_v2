@@ -1,24 +1,24 @@
-import CartDao from '../dao/carts.dao.js';
+import { cartsRepository } from '../repositories/index.js';
 
 export default class CartsService {
     static getById(cid) {
-        return CartDao.getById(cid);
+        return cartsRepository.getById(cid);
     }
     
     static create() {
-        return CartDao.create();
+        return cartsRepository.create();
     }
 
     static async update(cid, data) {
-        return CartDao.update(cid, data);
+        return cartsRepository.update(cid, data);
     }
 
     static delete(cid) {
-        return CartDao.delete(cid);
+        return cartsRepository.delete(cid);
     }
 
     static async addProducts(cid, pid, quantity) {
-        const cart = await CartDao.getById(cid);
+        const cart = await cartsRepository.getById(cid);
 
         const product = cart.products.find((currentProduct) => currentProduct.product.equals(pid));
         if (product){
@@ -27,20 +27,20 @@ export default class CartsService {
             cart.products.push({ product: pid, quantity: quantity});
         }
 
-        return CartDao.saveCart(cart);
+        return cartsRepository.saveCart(cart);
     }
 
     static async updateProducts(cid, pid, quantity){
-        const cart = await CartDao.getById(cid);
+        const cart = await cartsRepository.getById(cid);
         const product = cart.products.find((currentProduct) => currentProduct.product.equals(pid));
         product.quantity = quantity;
-        return CartDao.saveCart(cart);
+        return cartsRepository.saveCart(cart);
     }
 
     static async deleteProducts(cid, pid) {
-        const cart = await CartDao.getById(cid);
+        const cart = await cartsRepository.getById(cid);
         const product = cart.products.findIndex((currentProduct) => currentProduct.product.equals(pid));
         cart.products.splice(product, 1);
-        return CartDao.saveCart(cart);
+        return cartsRepository.saveCart(cart);
     }
 }

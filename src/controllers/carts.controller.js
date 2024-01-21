@@ -1,5 +1,7 @@
+import { v4 as uuidv4 } from 'uuid';
 import CartsService from '../services/carts.service.js';
 import ProductsService from '../services/products.service.js';
+import TicketsService from '../services/tickets.service.js';
 import { InvalidDataException, NotFoundException } from '../utils.js';
 
 export default class CartsController {
@@ -25,7 +27,6 @@ export default class CartsController {
             throw new NotFoundException('No se encontro el producto');
         }
     }
-
 
     static async getById(cid) {
         const cart = await CartsService.getById(cid);
@@ -81,5 +82,32 @@ export default class CartsController {
         const cart = await this.#verifyCart(cid);
         await this.#verifyExistence(cart, pid);
         return CartsService.deleteProducts(cid, pid);
+    }
+
+    static async purchase(cid, purchaser){
+        const cart = await this.#verifyCart(cid); 
+        const products = cart.products;
+
+        let availableProducts = []
+        let unavailableProducts = []
+        let unavailableProductsID = []
+        let amount = 0;
+
+        for (const product of products) { 
+            let isAvailable = await ProductsService.verifyStock(product.product._id, product.quantity);
+            if (isAvailable) {
+                amount = (product.product.price * product.quantity) + amount;
+                availableProducts.push(product);
+                await ProductsService.update(product.product._id, { stock: product.product.stock - product.quantity });
+            }  else {
+                unavailableProducts.push(product); 
+                unavailableProductsID.push({ product: product.product._id }); 
+            }
+            
+        }
+
+        await CartsService.update(cid, unavailableProducts);
+        const ticket = await TicketsService.create({code: uuidv4(), amount: amount, purchaser: purchaser})
+        return { ticket, unavailableProductsID };
     }
 }

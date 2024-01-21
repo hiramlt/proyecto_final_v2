@@ -1,4 +1,4 @@
-import ProductDao from '../dao/products.dao.js';
+import { productsRepository } from '../repositories/index.js';
 
 export default class ProductsService {
     static #custom_response(data, url) {
@@ -16,27 +16,33 @@ export default class ProductsService {
     }
 
     static async get(filter = {}, opts = {}, url) {
-        const data = await ProductDao.get(filter, opts);
+        const data = await productsRepository.get(filter, opts);
         return this.#custom_response(data, url);
     }
 
     static getById(pid) {
-        return ProductDao.getById(pid);
+        return productsRepository.getById(pid);
     }
 
     static getByCode(code) {
-        return ProductDao.getByCode(code);
+        return productsRepository.getByCode(code);
     }
 
     static create(data) {
-        return ProductDao.create(data);
+        return productsRepository.create(data);
     }
 
     static update(pid, data) {
-        return ProductDao.update(pid, data);
+        return productsRepository.update(pid, data);
     }
 
     static delete(pid) {
-        return ProductDao.delete(pid);
+        return productsRepository.delete(pid);
     }
+
+    static async verifyStock(pid, quantity) {
+        const product = await productsRepository.getById(pid);
+        return product.stock > quantity;
+    }
+
 }

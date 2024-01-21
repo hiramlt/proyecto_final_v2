@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { isAuth } from '../../utils.js';
+import { authRole, isAuth } from '../../utils.js';
 import config from '../../config/config.js';
 import ProductsController from '../../controllers/products.controller.js';
 
@@ -17,7 +17,6 @@ router.get('/products', isAuth('api'), async (req, res, next) => {
 router.get('/products/:pid', isAuth('api'), async (req, res, next) => {
     const { pid } = req.params;
     try {
-        console.log("AQUI");
         const product = await ProductsController.getById(pid);
         res.status(200).json(product);
     } catch (error) {
@@ -25,7 +24,7 @@ router.get('/products/:pid', isAuth('api'), async (req, res, next) => {
     }
 });
 
-router.post('/products', isAuth('api'), async (req, res, next) => {
+router.post('/products', isAuth('api'), authRole('admin'), async (req, res, next) => {
     const { body } = req;
     try {
         const product = await ProductsController.create(body);
@@ -35,7 +34,7 @@ router.post('/products', isAuth('api'), async (req, res, next) => {
     }
 });
 
-router.put('/products/:pid', isAuth('api'), async (req, res, next) => {
+router.put('/products/:pid', isAuth('api'), authRole('admin'), async (req, res, next) => {
     const { body } = req;
     const { pid } = req.params;
     try {
@@ -46,7 +45,7 @@ router.put('/products/:pid', isAuth('api'), async (req, res, next) => {
     }
 });
 
-router.delete('/products/:pid', isAuth('api'), async (req, res, next) => {
+router.delete('/products/:pid', isAuth('api'), authRole('admin'), async (req, res, next) => {
     const { pid } = req.params;
     try {
         await ProductsController.delete(pid);

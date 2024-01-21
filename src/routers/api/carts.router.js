@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { isAuth } from '../../utils.js';
+import { authRole, isAuth } from '../../utils.js';
 import CartsController from '../../controllers/carts.controller.js';
 
 const router = Router();
@@ -44,7 +44,7 @@ router.delete('/carts/:cid', isAuth('api'), async (req, res, next) => {
     }
 }); 
 
-router.post('/carts/:cid/product/:pid', isAuth('api'), async (req, res, next) => {
+router.post('/carts/:cid/product/:pid', isAuth('api'), authRole('user'), async (req, res, next) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     try {
@@ -55,7 +55,7 @@ router.post('/carts/:cid/product/:pid', isAuth('api'), async (req, res, next) =>
     }
 });
 
-router.put('/carts/:cid/product/:pid', isAuth('api'), async (req, res, next) => {
+router.put('/carts/:cid/product/:pid', isAuth('api'), authRole('user'), async (req, res, next) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     try {
@@ -66,11 +66,24 @@ router.put('/carts/:cid/product/:pid', isAuth('api'), async (req, res, next) => 
     }
 });
 
-router.delete('/carts/:cid/product/:pid', isAuth('api'), async (req, res, next) => {
+router.delete('/carts/:cid/product/:pid', isAuth('api'), authRole('user'), async (req, res, next) => {
     const { cid, pid } = req.params;
     try {
         await CartsController.deleteProducts(cid, pid);
         res.status(204).end();
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.post('/carts/:cid/purchase', isAuth('api'), async (req, res, next) => {
+    const { cid } = req.params;
+    try {
+        const { ticket, unavailableProductsID } = await CartsController.purchase(cid, req.user.email);
+        if (unavailableProductsID.length > 0) {
+            return res.status(200).json({ticket: ticket, unavailableProducts: unavailableProductsID})
+        }
+        res.status(200).json(ticket);  
     } catch (error) {
         next(error);
     }

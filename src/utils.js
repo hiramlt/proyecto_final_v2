@@ -12,15 +12,7 @@ export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSy
 export const isValidPassword = (password, userPassword) => bcrypt.compareSync(password, userPassword);
 
 export const createToken = (user) => {
-    const payload = {
-        id: user._id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        age: user.age,
-        cart: user.cart,
-        role: user.role,
-    }
+    const payload = typeof user.toJSON === 'function' ? user.toJSON() : user; 
     return jwt.sign(payload, config.jwt_secret, { expiresIn: '30m' });
 }
 
@@ -49,6 +41,16 @@ export const isAuth = (section) => (req, res, next) => {
         req.user = payload;
         next();
     })(req, res, next);
+}
+
+export const authRole = (role) => (req, res, next) => {
+    if(!req.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+    if(role !== req.user.role) {
+      return res.status(403).json({ message: 'No permissions' });
+    }
+    next();
 }
 
 export class Exception extends Error {

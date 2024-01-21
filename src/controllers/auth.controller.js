@@ -1,18 +1,9 @@
 import UsersService from '../services/users.service.js';
 import CartsService from '../services/carts.service.js';
+import config from '../config/config.js';
 import { InvalidDataException, UnauthorizedException, createToken, createHash, isValidPassword } from '../utils.js';
 
-const admin = {
-    first_name: 'admin',
-    last_name: 'coder',
-    email: 'adminCoder@coder.com',
-    password: 'adminCod3r123',
-    role: 'admin'
-}
-
 export default class AuthController {
-    
-
     static async register(data) {
         const { first_name, last_name, email, password, age } = data;
         if (!first_name || !last_name || !email || !password) {
@@ -39,8 +30,8 @@ export default class AuthController {
     static async login(email, password) {
         let token;
 
-        if (email === admin.email && password === admin.password) {
-            token = createToken(admin);
+        if (email === config.admin.email && password === config.admin.password) {
+            token = createToken(config.admin);
             return token;
         }
  
@@ -51,5 +42,9 @@ export default class AuthController {
         }
 
         throw new UnauthorizedException('Correo o contraseña invalidos')
+    }
+
+    static async getCurrentUser(user) {
+        return UsersService.getCurrentUser(user);
     }
 }

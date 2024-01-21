@@ -39,5 +39,5 @@ function addProduct(product_id, quantity){
             alert("Se añadio el producto al carrito")
         }
     })
-    .catch(error => console.error('Error al añadir producto:', error));
+    .catch(error => alert('Error al añadir producto:', error));
 }
