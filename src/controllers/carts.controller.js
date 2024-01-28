@@ -2,13 +2,13 @@ import { v4 as uuidv4 } from 'uuid';
 import CartsService from '../services/carts.service.js';
 import ProductsService from '../services/products.service.js';
 import TicketsService from '../services/tickets.service.js';
-import { InvalidDataException, NotFoundException } from '../utils.js';
+import CustomError from '../utils/errors.js';
 
 export default class CartsController {
     static async #verifyCart(cid) {
         const cart = await CartsService.getById(cid);
         if (!cart) {
-            throw new NotFoundException('No se encontro el carrito');
+            CustomError.create({ name: 'Not found', message: 'No se encontro el carrito', code: 5 })
         }
         return cart;
     }
@@ -16,7 +16,7 @@ export default class CartsController {
     static async #verifyProduct(pid) {
         const product = await ProductsService.getById(pid);
         if (!product) {
-            throw new NotFoundException('No se encontro el producto');
+            CustomError.create({ name: 'Not found', message: 'No se encontro el producto', code: 5 })
         }
         return product;
     }
@@ -24,14 +24,14 @@ export default class CartsController {
     static async #verifyExistence(cart, pid){
         const productExists = cart.products.find((currentProduct) => currentProduct.product.equals(pid));
         if(!productExists) {
-            throw new NotFoundException('No se encontro el producto');
+            CustomError.create({ name: 'Not found', message: 'No se encontro el producto', code: 5 })
         }
     }
 
     static async getById(cid) {
         const cart = await CartsService.getById(cid);
         if (!cart) {
-            throw new NotFoundException('No se encontro el carrito');
+            CustomError.create({ name: 'Not found', message: 'No se encontro el carrito', code: 5 })
         }
         return cart;
     }
@@ -47,12 +47,12 @@ export default class CartsController {
             )
         });
         if (!isValidData) {
-            throw new InvalidDataException('Ingrese un producto válido');
+            CustomError.create({ name: 'Invalid data type', message: 'El formato del producto no es válido', code: 2 })
         }
 
         const cart = await CartsService.getById(cid);
         if (!cart) {
-            throw new NotFoundException('No se encontro el carrito');
+            CustomError.create({ name: 'Not found', message: 'No se encontro el carrito', code: 5 })
         }
         await CartsService.update(cid, data);
         return CartsService.getById(cid);
@@ -61,7 +61,7 @@ export default class CartsController {
     static async delete(cid) {
         const cart = await CartsService.getById(cid);
         if (!cart) {
-            throw new NotFoundException('No se encontro el carrito')
+            CustomError.create({ name: 'Not found', message: 'No se encontro el carrito', code: 5 })
         }
         return CartsService.delete(cid);
     }

@@ -55,4 +55,13 @@ router.delete('/products/:pid', isAuth('api'), authRole('admin'), async (req, re
     }
 });
 
+router.get('/mockingproducts', isAuth('api'), async (req, res, next) => {
+    try {
+        const products = ProductsController.mock();
+        res.status(200).json({products: products});
+    } catch (error) {
+        next(error);
+    }
+});
+
 export default router;

@@ -1,4 +1,5 @@
 import { productsRepository } from '../repositories/index.js';
+import { generateProduct } from '../utils.js';
 
 export default class ProductsService {
     static #custom_response(data, url) {
@@ -43,6 +44,14 @@ export default class ProductsService {
     static async verifyStock(pid, quantity) {
         const product = await productsRepository.getById(pid);
         return product.stock > quantity;
+    }
+
+    static mockProducts() {
+        const products = [];
+        for (let i = 0; i < 100; i++) {
+            products.push(generateProduct());
+        }
+        return products
     }
 
 }

@@ -1,18 +1,19 @@
 import UsersService from '../services/users.service.js';
 import CartsService from '../services/carts.service.js';
 import config from '../config/config.js';
-import { InvalidDataException, UnauthorizedException, createToken, createHash, isValidPassword } from '../utils.js';
+import { createToken, createHash, isValidPassword } from '../utils.js';
+import CustomError from '../utils/errors.js';
 
 export default class AuthController {
     static async register(data) {
         const { first_name, last_name, email, password, age } = data;
         if (!first_name || !last_name || !email || !password) {
-            throw new InvalidDataException('Faltan campos requeridos')
+            CustomError.create({ name: 'Invalid user data', message: 'Faltan campos requeridos', code: 4 })
         }
 
         const user = await UsersService.getByEmail(email);
         if (user) {
-            throw new InvalidDataException('Usuario ya registrado');
+            CustomError.create({ name: 'Invalid user data', message: 'Usuario ya registrado', code: 4 })
         }
 
         const cart = await CartsService.create();
@@ -41,7 +42,7 @@ export default class AuthController {
             return token;
         }
 
-        throw new UnauthorizedException('Correo o contraseña invalidos')
+        CustomError.create({ name: 'Unauthorized', message: 'Correo o contraseña invalidos', code: 6 })
     }
 
     static async getCurrentUser(user) {

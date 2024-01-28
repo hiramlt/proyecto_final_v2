@@ -5,7 +5,8 @@ import handlebars from 'express-handlebars';
 import morgan from 'morgan';
 import path from 'path';
 import config from './config/config.js';
-import { Exception, __dirname } from './utils.js';
+import errorsEnums from './utils/errors.enums.js';
+import { __dirname } from './utils.js';
 import { initPassport } from './config/passport.config.js';
 
 import indexRouter from './routers/views/index.router.js';
@@ -32,8 +33,24 @@ app.use('/', indexRouter);
 app.use('/api', authRouter, productsRouter, cartsRouter);
 
 app.use((error, req, res, next) => {
-    const err_msg = error instanceof Exception ? error.message : `Ocurrio un error desconocido: ${error.message}`
-    res.status(error.statusCode || 500).json({ error: err_msg })
+    console.log(error.message);
+    
+    switch (error.code) {
+        case errorsEnums.BAD_REQUEST_ERROR:
+        case errorsEnums.INVALID_PARAMS_ERROR:
+        case errorsEnums.INVALID_TYPE_ERROR:
+            res.status(400).json({ error: error.message })            
+            break;
+        case errorsEnums.NOT_FOUND_ERROR:
+            res.status(404).json({ error: error.message })
+            break;
+        case errorsEnums.UNAUTHORIZED_ERROR:
+            res.status(401).json({ error: error.message })
+            break;
+        case errorsEnums.ROUTING_ERROR:
+        default:
+            res.status(500).json({ error: error.message })
+    }
     next();
 })
 

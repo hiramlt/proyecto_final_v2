@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import config from './config/config.js';
 import passport from 'passport';
+import { faker } from '@faker-js/faker'
 
 const __filename = url.fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
@@ -53,28 +54,23 @@ export const authRole = (role) => (req, res, next) => {
     next();
 }
 
-export class Exception extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.statusCode = statusCode;
-  }
-}
-  
-export class InvalidDataException extends Exception {
-  constructor(message) {
-    super(message, 400);
-  }
-}
-  
-export class NotFoundException extends Exception {
-  constructor(message) {
-    super(message, 404);
+export const generateProduct = () => {
+  return {
+    _id: faker.database.mongodbObjectId(),
+    title: faker.commerce.productName(),
+    description: faker.commerce.productDescription(),
+    code: faker.string.alphanumeric(8),
+    price: faker.commerce.price(),
+    status: faker.lorem.slug({ min: 1, max: 3 }),
+    stock: faker.number.int({ min: 1, max: 999 }),
+    category: faker.commerce.department(),
+    thumbnails: [
+      faker.image.url(),
+      faker.image.url()
+    ],
+    createdAt: faker.date.recent(),
+    updatedAt: faker.date.soon(),
+    __v: faker.number.int({ min: 0, max: 8})
   }
 }
 
-export class UnauthorizedException extends Exception {
-  constructor(message) {
-    super(message, 401);
-  }
-}
-  

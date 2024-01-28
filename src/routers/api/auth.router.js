@@ -21,7 +21,7 @@ router.post('/auth/login', async (req, res, next) => {
         return res.cookie('access_token', token, { maxAge: 1000*60*30, httpOnly: true, signed: true })
         .status(200).redirect('/products');
     } catch (error) {
-        if (error.statusCode === 401) {
+        if (error.code === 401) {
             return res.status(401).render('error', { title: 'Error', errorMsg: error.message });
         }
         next(error);
