@@ -13,5 +13,6 @@ export default {
         email: process.env.ADMIN_EMAIL || 'admin@mail.com',
         password: process.env.ADMIN_PASSWORD || 'adminpassword',
         role: 'admin'
-    }
+    },
+    env: process.env.ENV || 'development'
 }

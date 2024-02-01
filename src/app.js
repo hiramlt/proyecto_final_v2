@@ -8,6 +8,7 @@ import config from './config/config.js';
 import errorsEnums from './utils/errors.enums.js';
 import { __dirname } from './utils.js';
 import { initPassport } from './config/passport.config.js';
+import { appLogger } from './utils/logger.js';
 
 import indexRouter from './routers/views/index.router.js';
 import authRouter from './routers/api/auth.router.js';
@@ -17,6 +18,7 @@ import cartsRouter from './routers/api/carts.router.js';
 const app = express();
 
 app.use(morgan('dev'));
+app.use(appLogger);
 app.use(express.json());
 app.use(cookieParse(config.cookie_secret));
 app.use(express.urlencoded({ extended: true }));
