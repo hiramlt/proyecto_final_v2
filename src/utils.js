@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import config from './config/config.js';
 import passport from 'passport';
 import { faker } from '@faker-js/faker'
+import CustomError from './utils/errors.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
@@ -36,7 +37,8 @@ export const isAuth = (section) => (req, res, next) => {
         }
         if (!payload) {
             return section === 'api' ? 
-            res.status(401).json({ error: info.message ? info.message : info.toString() }) :
+            CustomError.create({ name: 'Unauthorized', message: info.message ? info.message : info.toString(), code: 6 }) :
+            //res.status(401).json({ error: info.message ? info.message : info.toString() }) :
             res.render('error', { title: 'Error', errorMsg: info.message ? info.message : info.toString() });
         }
         req.user = payload;
@@ -46,10 +48,12 @@ export const isAuth = (section) => (req, res, next) => {
 
 export const authRole = (role) => (req, res, next) => {
     if(!req.user) {
-        return res.status(401).json({ message: 'Unauthorized' });
+        CustomError.create({ name: 'Unauthorized', message: 'Unauthorized', code: 6 })
+        //return res.status(401).json({ message: 'Unauthorized' });
     }
     if(role !== req.user.role) {
-      return res.status(403).json({ message: 'No permissions' });
+        CustomError.create({ name: 'No permissions', message: 'No permissions', code: 7 })
+        // return res.status(403).json({ message: 'No permissions' });
     }
     next();
 }

@@ -38,6 +38,7 @@ router.delete('/carts/:cid', isAuth('api'), async (req, res, next) => {
     const { cid } = req.params;
     try {
         await CartsController.delete(cid);
+        req.logger.info('Productos eliminados del carrito')
         res.status(204).end();
     } catch (error) {
         next(error);
@@ -83,6 +84,7 @@ router.post('/carts/:cid/purchase', isAuth('api'), async (req, res, next) => {
         if (unavailableProductsID.length > 0) {
             return res.status(200).json({ticket: ticket, unavailableProducts: unavailableProductsID})
         }
+        req.logger.info('Compra realizada exitosamente')
         res.status(200).json(ticket);  
     } catch (error) {
         next(error);

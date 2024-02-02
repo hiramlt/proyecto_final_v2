@@ -11,6 +11,7 @@ import { initPassport } from './config/passport.config.js';
 import { appLogger } from './utils/logger.js';
 
 import indexRouter from './routers/views/index.router.js';
+import testRouter from './routers/api/tests.router.js';
 import authRouter from './routers/api/auth.router.js';
 import productsRouter from './routers/api/products.router.js';
 import cartsRouter from './routers/api/carts.router.js';
@@ -31,26 +32,34 @@ app.set('view engine', 'handlebars');
 initPassport();
 app.use(passport.initialize());
 
-app.use('/', indexRouter);
+app.use('/', indexRouter, testRouter);
 app.use('/api', authRouter, productsRouter, cartsRouter);
 
 app.use((error, req, res, next) => {
-    console.log(error.message);
-    
     switch (error.code) {
         case errorsEnums.BAD_REQUEST_ERROR:
         case errorsEnums.INVALID_PARAMS_ERROR:
         case errorsEnums.INVALID_TYPE_ERROR:
+            req.logger.error(error.message)
             res.status(400).json({ error: error.message })            
             break;
         case errorsEnums.NOT_FOUND_ERROR:
+            req.logger.error(error.message)
             res.status(404).json({ error: error.message })
             break;
         case errorsEnums.UNAUTHORIZED_ERROR:
+            req.logger.warning(error.message)
             res.status(401).json({ error: error.message })
             break;
+        case errorsEnums.NO_PERMISSIONS_ERROR:
+            req.logger.warning(error.message)
+            res.status(403).json({ error: error.message })
+            break;
         case errorsEnums.ROUTING_ERROR:
+            req.logger.http(error.message)
+            res.status(500).json({ error: error.message })
         default:
+            req.logger.error(error.message)
             res.status(500).json({ error: error.message })
     }
     next();

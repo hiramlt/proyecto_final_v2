@@ -18,6 +18,7 @@ router.post('/auth/login', async (req, res, next) => {
     const { email, password } = req.body;
     try {
         const token = await AuthController.login(email, password);
+        req.logger.info('Sesión iniciada exitosamente')
         return res.cookie('access_token', token, { maxAge: 1000*60*30, httpOnly: true, signed: true })
         .status(200).redirect('/products');
     } catch (error) {
