@@ -38,7 +38,6 @@ export const isAuth = (section) => (req, res, next) => {
         if (!payload) {
             return section === 'api' ? 
             CustomError.create({ name: 'Unauthorized', message: info.message ? info.message : info.toString(), code: 6 }) :
-            //res.status(401).json({ error: info.message ? info.message : info.toString() }) :
             res.render('error', { title: 'Error', errorMsg: info.message ? info.message : info.toString() });
         }
         req.user = payload;
@@ -49,11 +48,9 @@ export const isAuth = (section) => (req, res, next) => {
 export const authRole = (role) => (req, res, next) => {
     if(!req.user) {
         CustomError.create({ name: 'Unauthorized', message: 'Unauthorized', code: 6 })
-        //return res.status(401).json({ message: 'Unauthorized' });
     }
     if(role !== req.user.role) {
         CustomError.create({ name: 'No permissions', message: 'No permissions', code: 7 })
-        // return res.status(403).json({ message: 'No permissions' });
     }
     next();
 }
