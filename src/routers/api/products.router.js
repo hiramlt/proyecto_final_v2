@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authRole, isAuth } from '../../utils.js';
+import { hasPermission, isAuth, authRole } from '../../utils.js';
 import config from '../../config/config.js';
 import ProductsController from '../../controllers/products.controller.js';
 
@@ -24,7 +24,7 @@ router.get('/products/:pid', isAuth('api'), async (req, res, next) => {
     }
 });
 
-router.post('/products', isAuth('api'), authRole('admin'), async (req, res, next) => {
+router.post('/products', isAuth('api'), authRole('admin', 'premium'), hasPermission(), async (req, res, next) => {
     const { body } = req;
     try {
         const product = await ProductsController.create(body);
@@ -34,7 +34,7 @@ router.post('/products', isAuth('api'), authRole('admin'), async (req, res, next
     }
 });
 
-router.put('/products/:pid', isAuth('api'), authRole('admin'), async (req, res, next) => {
+router.put('/products/:pid', isAuth('api'), authRole('admin', 'premium'), hasPermission(), async (req, res, next) => {
     const { body } = req;
     const { pid } = req.params;
     try {
@@ -45,7 +45,7 @@ router.put('/products/:pid', isAuth('api'), authRole('admin'), async (req, res, 
     }
 });
 
-router.delete('/products/:pid', isAuth('api'), authRole('admin'), async (req, res, next) => {
+router.delete('/products/:pid', isAuth('api'), authRole('admin', 'premium'), hasPermission(), async (req, res, next) => {
     const { pid } = req.params;
     try {
         await ProductsController.delete(pid);

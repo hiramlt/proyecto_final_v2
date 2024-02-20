@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authRole, isAuth } from '../../utils.js';
+import { authRole, isAuth, isNotOwner } from '../../utils.js';
 import CartsController from '../../controllers/carts.controller.js';
 
 const router = Router();
@@ -45,7 +45,7 @@ router.delete('/carts/:cid', isAuth('api'), async (req, res, next) => {
     }
 }); 
 
-router.post('/carts/:cid/product/:pid', isAuth('api'), authRole('user'), async (req, res, next) => {
+router.post('/carts/:cid/product/:pid', isAuth('api'), authRole('user', 'premium'), isNotOwner(), async (req, res, next) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     try {
@@ -56,7 +56,7 @@ router.post('/carts/:cid/product/:pid', isAuth('api'), authRole('user'), async (
     }
 });
 
-router.put('/carts/:cid/product/:pid', isAuth('api'), authRole('user'), async (req, res, next) => {
+router.put('/carts/:cid/product/:pid', isAuth('api'), authRole('user', 'premium'), isNotOwner(), async (req, res, next) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     try {
@@ -67,7 +67,7 @@ router.put('/carts/:cid/product/:pid', isAuth('api'), authRole('user'), async (r
     }
 });
 
-router.delete('/carts/:cid/product/:pid', isAuth('api'), authRole('user'), async (req, res, next) => {
+router.delete('/carts/:cid/product/:pid', isAuth('api'), authRole('user', 'premium'), async (req, res, next) => {
     const { cid, pid } = req.params;
     try {
         await CartsController.deleteProducts(cid, pid);

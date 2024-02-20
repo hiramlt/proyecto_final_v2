@@ -6,6 +6,8 @@ import config from './config/config.js';
 import passport from 'passport';
 import { faker } from '@faker-js/faker'
 import CustomError from './utils/errors.js';
+import ProductsController from './controllers/products.controller.js';
+import UsersService from './services/users.service.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
@@ -16,6 +18,11 @@ export const isValidPassword = (password, userPassword) => bcrypt.compareSync(pa
 export const createToken = (user) => {
     const payload = typeof user.toJSON === 'function' ? user.toJSON() : user; 
     return jwt.sign(payload, config.jwt_secret, { expiresIn: '30m' });
+}
+
+export const createPasswRecoveryToken = (data) => {
+    const payload = data;
+    return jwt.sign(payload, config.jwt_secret, { expiresIn: '60m' });
 }
 
 export const validateToken = (token) => {
@@ -45,14 +52,48 @@ export const isAuth = (section) => (req, res, next) => {
     })(req, res, next);
 }
 
-export const authRole = (role) => (req, res, next) => {
-    if(!req.user) {
-        CustomError.create({ name: 'Unauthorized', message: 'Unauthorized', code: 6 })
+export const authRole = (role1, role2) => async (req, res, next) => {
+    try {
+        if(!req.user) {
+            CustomError.create({ name: 'Unauthorized', message: 'Unauthorized', code: 6 })
+        }
+        
+        let user = req.user.role !== 'admin' ? await UsersService.getById(req.user._id) : req.user;
+        if(user.role !== role1 && user.role !== role2) {
+            CustomError.create({ name: 'No permissions', message: 'No permissions', code: 7 })
+        }
+        next();
+    } catch (error) {
+        next(error);
     }
-    if(role !== req.user.role) {
-        CustomError.create({ name: 'No permissions', message: 'No permissions', code: 7 })
+}
+
+export const hasPermission = () => async (req, res, next) => {
+    try {
+        if (req.params.pid) {
+            const product = await ProductsController.getById(req.params.pid);
+            if (req.user.email !== config.admin.email && product.owner !== req.user.email) {
+                CustomError.create({ name: 'No permissions', message: 'No permissions', code: 7 })
+            } 
+        }
+        next()    
+    } catch (error) {
+        next(error);
     }
-    next();
+}   
+
+export const isNotOwner = () => async (req, res, next) => {
+    try {
+        if (req.params.pid) {
+            const product = await ProductsController.getById(req.params.pid);
+            if (product.owner === req.user.email) {
+                CustomError.create({ name: 'Invalid own product', message: 'This product can not be added to cart', code: 4 })
+            }
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
 }
 
 export const generateProduct = () => {
@@ -69,6 +110,7 @@ export const generateProduct = () => {
       faker.image.url(),
       faker.image.url()
     ],
+    owner: config.admin.email,
     createdAt: faker.date.recent(),
     updatedAt: faker.date.soon(),
     __v: faker.number.int({ min: 0, max: 8})

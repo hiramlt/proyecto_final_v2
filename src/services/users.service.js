@@ -13,6 +13,10 @@ export default class UsersService {
         return usersRepository.create(data);
     }
 
+    static update(uid, data) {
+        return usersRepository.update(uid, data);
+    }
+
     static getCurrentUser(user) {
         return usersRepository.getCurrentUser(user);
     }

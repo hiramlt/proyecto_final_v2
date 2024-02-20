@@ -1,4 +1,5 @@
 import ProductsService from '../services/products.service.js';
+import UsersService from '../services/users.service.js';
 import CustomError from '../utils/errors.js';
 
 export default class ProductsController {
@@ -23,12 +24,19 @@ export default class ProductsController {
     static async create(data) {
         const { title, description, code, price, status, stock, category } = data; 
         if (!title || !description || !code || !price || !status || !stock || !category){
-            CustomError.create({ name: 'Invalid user data', message: 'Faltan campos requeridos', code: 4 })
+            CustomError.create({ name: 'Invalid data', message: 'Faltan campos requeridos', code: 4 })
         }
 
         const productExists = await ProductsService.getByCode(code);
         if (productExists) {
-            CustomError.create({ name: 'Invalid user data', message: 'El producto ya registrado', code: 4 })
+            CustomError.create({ name: 'Invalid data', message: 'El producto ya registrado', code: 4 })
+        }
+
+        if (data.owner){
+            const userExists = await UsersService.getByEmail(data.owner);
+            if (!userExists) {
+                CustomError.create({ name: 'Invalid data', message: 'El usuario no esta registrado', code: 4 })
+            }
         }
 
         return ProductsService.create(data);

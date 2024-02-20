@@ -14,5 +14,11 @@ export default {
         password: process.env.ADMIN_PASSWORD || 'adminpassword',
         role: 'admin'
     },
+    email_data: {
+        user: process.env.EMAIL_USER || 'test@example.com',
+        password: process.env.EMAIL_PASSWORD || 'testpassword',
+        service: process.env.EMAIL_SERVICE || 'gmail',
+        port: process.env.EMAIL_PORT || '465'
+    },
     env: process.env.ENV || 'development'
 }

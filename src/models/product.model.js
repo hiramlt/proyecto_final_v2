@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
+import config from '../config/config.js';
 
 const ProductSchema = new mongoose.Schema({
     title: { type: String, required: true, index: true },
@@ -10,6 +11,7 @@ const ProductSchema = new mongoose.Schema({
     stock: { type: Number, required: true },
     category: { type: String, required: true },
     thumbnails: { type: Array, default: [] },
+    owner: { type: String, default: config.admin.email }
 }, { timestamps: true });
 
 ProductSchema.plugin(paginate);

@@ -12,4 +12,8 @@ export default class UserDao {
     static create(data) {
         return UserModel.create(data);    
     }
+
+    static update(uid, data) {
+        return UserModel.updateOne({ _id: uid }, { $set: data });
+    }
 }

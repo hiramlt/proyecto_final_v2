@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { isAuth } from '../../utils.js';
+import { isAuth, validateToken } from '../../utils.js';
 import config from '../../config/config.js';
 import ProductsController from '../../controllers/products.controller.js';
 import CartsController from '../../controllers/carts.controller.js';
@@ -17,6 +17,20 @@ router.get('/register', (req, res) => {
 router.get('/profile', isAuth('views'), (req, res) => {
     res.render('profile', { title: 'Mi perfil', user: req.user });
 });
+
+router.get('/recover-password', (req, res) => {
+    res.render('recover-password', { title: 'Recuperar contraseña' });
+});
+
+router.get('/set-password/:token', async (req, res) => {
+    const { token } = req.params
+    const user_data = await validateToken(token);
+    if (!token || !user_data) {
+        return res.render('error', { title: 'Error', errorMsg: 'El enlace ha expirado' });
+    }
+
+    res.render('set-password', { title: 'Cambiar contraseña', user: user_data })
+})
 
 router.get('/products', isAuth('views'), async (req, res, next) => {
     try {

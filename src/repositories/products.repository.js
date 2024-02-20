@@ -16,7 +16,7 @@ export default class ProductsRepository {
     }
 
     create(data) {
-        return ProductModel.create(data); 
+        return this.dao.create(data); 
     }
 
     update(pid, data) {

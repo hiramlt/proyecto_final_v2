@@ -13,8 +13,12 @@ export default class UsersRepository {
         return this.dao.getById(uid);
     }
 
-    create(data) {
+    async create(data) {
         return this.dao.create(data);
+    }
+
+    async update(uid, data) {
+        return this.dao.update(uid, data);
     }
 
     getCurrentUser(user) {
