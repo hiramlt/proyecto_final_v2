@@ -1,0 +1,304 @@
+paths:
+  /api/products:
+    get:
+      summary: Listar productos (incluyendo paginación)
+      tags:
+        - Products
+      responses:
+        200:
+          description: Se obtiene la lista de productos desde la base de datos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Estado de la respuesta.
+                    example: Success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  totalPages:
+                    type: number
+                    description: Número total de páginas.
+                  prevPage:
+                    type: number 
+                    description: Número de página anterior.
+                  nextPage:
+                    type: number 
+                    description: Número de página siguiente.
+                  hasPrevPage:
+                    type: boolean
+                    description: Indica si existe una página anterior.
+                  hasNextPage:
+                    type: boolean
+                    description: Indica si existe una página siguiente.
+                  prevLink:
+                    type: string
+                    description: URL de la página anterior.
+                  nextLink:
+                    type: string
+                    description: URL de la página siguiente.
+        500:
+          description: Error interno del servidor
+        401:
+          description: No autenticado o token expirado
+    post:
+      summary: Registrar un nuevo producto
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/createProduct'
+      responses:
+        201:
+          description: Se registró el producto exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        403:
+          description: No autorizado
+        500:
+          description: Error interno del servidor.
+
+  /api/products/{pid}:
+    get:
+      summary: Obtener un producto
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto
+          schema: 
+            type: string
+      responses:
+        200:
+          description: Producto obtenido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        404:
+          description: No se encontro el producto 
+        500:
+          description: Error interno del servidor.
+    put:
+      summary: Actualizar un producto por su ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto
+          schema: 
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/updateProduct'
+      responses:
+        200:
+          description: Producto actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        403:
+          description: No autorizado
+        404:
+          description: No se encontro el producto 
+        500:
+          description: Error interno del servidor.
+    delete:
+      summary: Eliminar un producto por su ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto
+          schema: 
+            type: string
+      responses:
+        204:
+          description: Producto eliminado
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        403:
+          description: No autorizado
+        404:
+          description: No se encontro el producto 
+        500:
+          description: Error interno del servidor.
+  
+  /api/mockingproducts:
+    get:
+      summary: Listar mock de 100 productos 
+      tags:
+        - Products
+      responses:
+        200:
+          description: Se obtiene la lista de productos generados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products: 
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        401:
+          description: No autenticado o token expirado
+        500:
+          description: Error interno del servidor
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Identificador del producto en la base de datos.
+        title: 
+          type: string
+          description: Título del producto.
+        description:
+          type: string
+          description: Descripción del producto.
+        code: 
+          type: string
+          description: Código del producto (único).
+        price: 
+          type: number
+          description: Precio del producto.
+        status:
+          type: string
+          description: Estado del producto.
+        stock:
+          type: number
+          description: Stock disponible del producto.
+        category:
+          type: string
+          description: Categoría del producto.
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: Imágenes del producto.
+        owner:
+          type: string
+          description: Email del propietario del producto.
+        createdAt:
+          type: string
+          description: Fecha de creación del producto.
+        updatedAt:
+          type: string
+          description: Fecha de actualización del producto.
+      example:
+        _id: 65d51566b41e464facff4da4
+        title: Producto 1
+        description: Ejemplo de producto
+        code: abc123
+        price: 100
+        status: Disponible
+        stock: 10
+        category: Alimentos
+        thumbnails: []
+        owner: example@mail.com
+        createdAt: 2021-01-01T00:00
+        updatedAt: 2021-01-01T00:00
+  requestBodies:
+    createProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Título del producto.
+        description:
+          type: string
+          description: Descripción del producto.
+        code:
+          type: string
+          description: Código del producto (único).
+        price:
+          type: number
+          description: Precio del producto.
+        status:
+          type: string
+          description: Estado del producto.
+        stock:
+          type: number
+          description: Stock disponible del producto.
+        category:
+          type: string
+          description: Categoría del producto.
+        owner:
+          type: string
+          description: Email del propietario del producto.
+      example:
+        title: Producto 1
+        description: Ejemplo de producto
+        code: abc123
+        price: 100
+        status: Disponible
+        stock: 10
+        category: Alimentos
+        owner: example@mail.com
+
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Título del producto.
+        description:
+          type: string
+          description: Descripción del producto.
+        price:
+          type: number
+          description: Precio del producto.
+        status:
+          type: string
+          description: Estado del producto.
+        stock:
+          type: number
+          description: Stock disponible del producto.
+        category:
+          type: string
+          description: Categoría del producto.
+      example:
+        title: Producto 1
+        description: Ejemplo de producto
+        price: 100
+        status: Disponible
+        stock: 10
+        category: Alimentos
+      

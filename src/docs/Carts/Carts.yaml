@@ -1,0 +1,355 @@
+paths:
+  /api/carts:
+    post:
+      summary: Crear un nuevo carrito
+      tags:
+        - Carts
+      responses:
+        201:
+          description: Carrito creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        401:
+          description: No autenticado o token expirado
+        500:
+          description: Error interno del servidor.
+  
+  /api/carts/{cid}:
+    get:
+      summary: Obtener un carrito por su ID
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema: 
+            type: string
+      responses:
+        200:
+          description: Carrito obtenido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        404:
+          description: No se encontro el carrito 
+        500:
+          description: Error interno del servidor.
+    put: 
+      summary: Actualizar los productos de un carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema: 
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/updateCart'
+      responses:
+        200:
+          description: Carrito actualizado
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        404:
+          description: No se encontro el carrito 
+        500:
+          description: Error interno del servidor.
+    delete:
+      summary: Eliminar carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema: 
+            type: string
+      responses:
+        204:
+          description: Carrito eliminado
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        404:
+          description: No se encontro el carrito 
+        500:
+          description: Error interno del servidor.
+
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Comprar un carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema: 
+            type: string
+      responses:
+        200:
+          description: Se completo la compra
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        404:
+          description: No se encontro el carrito 
+        500:
+          description: Error interno del servidor.
+        
+
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Añadir un producto al carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema: 
+            type: string
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto
+          schema: 
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/addProduct'
+      responses:
+        200:
+          description: Producto agregado al carrito
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        404:
+          description: No se encontro el carrito o producto
+        500:
+          description: Error interno del servidor.
+    put:
+      summary: Actualizar un producto de un carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema: 
+            type: string
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto
+          schema: 
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/addProduct'
+      responses:
+        200:
+          description: Producto actualizado
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        404:
+          description: No se encontro el carrito o producto
+        500:
+          description: Error interno del servidor.
+    delete:
+      summary: Eliminar producto del carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          description: ID del carrito
+          schema: 
+            type: string
+        - in: path
+          name: pid
+          required: true
+          description: ID del producto
+          schema: 
+            type: string
+      responses:
+        204:
+          description: Producto eliminado del carrito
+        400:
+          description: Error en la solicitud, parámetros incorrectos
+        401:
+          description: No autenticado o token expirado
+        404:
+          description: No se encontro el carrito o producto
+        500:
+          description: Error interno del servidor.
+
+    
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Identificador del carrito
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        createdAt:
+          type: string
+          description: Fecha de creación del carrito.
+        updatedAt:
+          type: string
+          description: Fecha de actualización del carrito.
+    
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Identificador del producto en la base de datos.
+        title: 
+          type: string
+          description: Título del producto.
+        description:
+          type: string
+          description: Descripción del producto.
+        code: 
+          type: string
+          description: Código del producto (único).
+        price: 
+          type: number
+          description: Precio del producto.
+        status:
+          type: string
+          description: Estado del producto.
+        stock:
+          type: number
+          description: Stock disponible del producto.
+        category:
+          type: string
+          description: Categoría del producto.
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: Imágenes del producto.
+        owner:
+          type: string
+          description: Email del propietario del producto.
+        createdAt:
+          type: string
+          description: Fecha de creación del producto.
+        updatedAt:
+          type: string
+          description: Fecha de actualización del producto.
+      example:
+        _id: 65d51566b41e464facff4da4
+        title: Producto 1
+        description: Ejemplo de producto
+        code: abc123
+        price: 100
+        status: Disponible
+        stock: 10
+        category: Alimentos
+        thumbnails: []
+        owner: example@mail.com
+        createdAt: 2021-01-01T00:00
+        updatedAt: 2021-01-01T00:00
+
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador del ticket.
+        code: 
+          type: string
+          description: Código único del ticket.
+        purchase_datetime:
+          type: string
+          description: Fecha de generación del ticket.
+        amount: 
+          type: number
+          description: Costo total de la compra.
+        purchaser:
+          type: string
+          description: Email del comprador.
+      example:
+        id: 65dc347d761eea88e226a72b
+        code: 029650bb-4f5a-4fe2-b067-5f70d2592288
+        purchase_datetime: 2024-02-26T06:49
+        amount: 189
+        purchaser: toledohiram2@gmail.com
+
+  requestBodies:
+    updateCart:
+      type: array
+      items:
+        type: object
+        properties:
+          product:
+            type: string
+          quantity:
+            type: number
+        example:
+          product: 65d51566b41e464facff4da4
+          quantity: 3
+    addProduct:
+      type: object
+      properties:
+        quantity:
+          type: number
+      example:
+        quantity: 5

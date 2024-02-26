@@ -2,6 +2,8 @@ import express from 'express';
 import passport from 'passport';
 import cookieParse from 'cookie-parser';
 import handlebars from 'express-handlebars';
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
 import path from 'path';
 import config from './config/config.js';
@@ -15,6 +17,17 @@ import testRouter from './routers/api/tests.router.js';
 import authRouter from './routers/api/auth.router.js';
 import productsRouter from './routers/api/products.router.js';
 import cartsRouter from './routers/api/carts.router.js';
+
+const swaggerSpec = swaggerJsDoc({
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Ecommerce API',
+            description: 'Documentación de API ecommerce.'
+        },
+    },
+    apis: [path.join(__dirname, 'docs', '**', '*.yaml')], 
+})
 
 const app = express();
 
@@ -34,6 +47,7 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter, testRouter);
 app.use('/api', authRouter, productsRouter, cartsRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use((error, req, res, next) => {
     switch (error.code) {
