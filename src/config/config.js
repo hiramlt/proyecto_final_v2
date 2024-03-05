@@ -5,6 +5,7 @@ dotenv.config();
 export default {
     port: process.env.PORT || 3000,
     mongo_uri: process.env.MONGO_URI || 'mongodb://localhost/27017/ecommerce',
+    mongo_uri_test: process.env.MONGO_URI_TEST || 'mongodb://localhost/27017/ecommerce-test',
     jwt_secret: process.env.JWT_SECRET || 'secret',
     cookie_secret: process.env.COOKIE_SECRET || 'secret',
     admin: {
