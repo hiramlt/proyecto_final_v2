@@ -7,5 +7,6 @@ export default class UsersDTO {
         this.age = user.age;
         this.cart = user.cart
         this.role = user.role;
+        this.documents = user.documents
     }
 }

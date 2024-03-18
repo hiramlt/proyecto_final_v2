@@ -1,1 +1,7 @@
 node_modules
+public/documents/*
+!public/documents/.gitkeep
+public/products/*
+!public/products/.gitkeep
+public/profiles/*
+!public/profiles/.gitkeep

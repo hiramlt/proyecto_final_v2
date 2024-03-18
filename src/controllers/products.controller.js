@@ -21,7 +21,7 @@ export default class ProductsController {
         return product;
     }
 
-    static async create(data) {
+    static async create(data, thumbnails) {
         const { title, description, code, price, status, stock, category } = data; 
         if (!title || !description || !code || !price || !status || !stock || !category){
             CustomError.create({ name: 'Invalid data', message: 'Faltan campos requeridos', code: 4 })
@@ -37,6 +37,16 @@ export default class ProductsController {
             if (!userExists) {
                 CustomError.create({ name: 'Invalid data', message: 'El usuario no esta registrado', code: 4 })
             }
+        }
+
+        if (thumbnails) {
+            const product_thumbnails = []
+            thumbnails.forEach(image => {
+                const file_path = image.destination.split('\\')
+                product_thumbnails.push(`/${file_path[file_path.length -1]}/${image.filename}`)
+            });
+
+            data.thumbnails = product_thumbnails
         }
 
         return ProductsService.create(data);

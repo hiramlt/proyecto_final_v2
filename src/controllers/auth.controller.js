@@ -39,6 +39,7 @@ export default class AuthController {
  
         const user = await UsersService.getByEmail(email);
         if (user && isValidPassword(password, user.password)) {
+            await UsersService.update(user._id, { last_connection: Date.now().toString() })
             token = createToken(user);
             return token;
         }
@@ -61,16 +62,6 @@ export default class AuthController {
         return data;
     }
     
-    static async updateRole(uid) {
-        const user = await UsersService.getById(uid);
-        if (!user) {
-            CustomError.create({ name: 'Not found', message: 'No se encontro el usuario', code: 5 })
-        }
-        const newRole = user.role === 'user' ? 'premium' : 'user'
-        await UsersService.update(uid, { role: newRole });
-        return UsersService.getById(uid);
-    }
-
     static async updatePassword(uid, password) {
         const user = await UsersService.getById(uid);
         if (!password) {

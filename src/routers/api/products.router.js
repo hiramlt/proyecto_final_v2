@@ -1,11 +1,14 @@
 import { Router } from 'express';
 import { hasPermission, isAuth, authRole } from '../../utils.js';
+import { uploadFile } from '../../utils/uploads.js';
 import config from '../../config/config.js';
 import ProductsController from '../../controllers/products.controller.js';
 
 const router = Router();
 
-router.get('/products', isAuth('api'), async (req, res, next) => {
+router.use(isAuth('api'))
+
+router.get('/products', async (req, res, next) => {
     try {
         const products = await ProductsController.get(req.query, `http://localhost:${config.port}/api/products`);
         res.status(200).json(products)
@@ -14,7 +17,7 @@ router.get('/products', isAuth('api'), async (req, res, next) => {
     }
 });
 
-router.get('/products/:pid', isAuth('api'), async (req, res, next) => {
+router.get('/products/:pid', async (req, res, next) => {
     const { pid } = req.params;
     try {
         const product = await ProductsController.getById(pid);
@@ -24,17 +27,17 @@ router.get('/products/:pid', isAuth('api'), async (req, res, next) => {
     }
 });
 
-router.post('/products', isAuth('api'), authRole('admin', 'premium'), hasPermission(), async (req, res, next) => {
-    const { body } = req;
+router.post('/products', uploadFile.array('thumbnails') , authRole('admin', 'premium'), hasPermission(), async (req, res, next) => {
+    const { body, files } = req;
     try {
-        const product = await ProductsController.create(body);
+        const product = await ProductsController.create(body, files);
         res.status(201).json(product);
     } catch (error) {
         next(error);
     }
 });
 
-router.put('/products/:pid', isAuth('api'), authRole('admin', 'premium'), hasPermission(), async (req, res, next) => {
+router.put('/products/:pid', authRole('admin', 'premium'), hasPermission(), async (req, res, next) => {
     const { body } = req;
     const { pid } = req.params;
     try {
@@ -45,7 +48,7 @@ router.put('/products/:pid', isAuth('api'), authRole('admin', 'premium'), hasPer
     }
 });
 
-router.delete('/products/:pid', isAuth('api'), authRole('admin', 'premium'), hasPermission(), async (req, res, next) => {
+router.delete('/products/:pid', authRole('admin', 'premium'), hasPermission(), async (req, res, next) => {
     const { pid } = req.params;
     try {
         await ProductsController.delete(pid);
@@ -55,7 +58,7 @@ router.delete('/products/:pid', isAuth('api'), authRole('admin', 'premium'), has
     }
 });
 
-router.get('/mockingproducts', isAuth('api'), async (req, res, next) => {
+router.get('/mockingproducts', async (req, res, next) => {
     try {
         const products = ProductsController.mock();
         res.status(200).json({products: products});

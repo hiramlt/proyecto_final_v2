@@ -21,6 +21,10 @@ export default class UsersRepository {
         return this.dao.update(uid, data);
     }
 
+    async saveUser(user) {
+        return this.dao.saveUser(user);
+    }
+
     getCurrentUser(user) {
         const currentUser = new UsersDTO(user);
         return currentUser;

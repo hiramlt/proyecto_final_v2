@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authRole, isAuth } from '../../utils.js';
+import { isAuth } from '../../utils.js';
 import AuthController from '../../controllers/auth.controller.js';
 
 const router = Router();
@@ -58,14 +58,14 @@ router.post('/auth/set-password', async (req, res, next) => {
     }
 });
 
-router.post('/users/premium/:uid', isAuth('api'), authRole('user', 'premium'), async (req, res, next) => {
-    const { uid } = req.params;
-    try {
-        const user = await AuthController.updateRole(uid);
-        res.status(200).json(user);
-    } catch (error) {
-        next(error);
-    }
-});
+// router.post('/users/premium/:uid', isAuth('api'), authRole('user', 'premium'), async (req, res, next) => {
+//     const { uid } = req.params;
+//     try {
+//         const user = await AuthController.updateRole(uid);
+//         res.status(200).json(user);
+//     } catch (error) {
+//         next(error);
+//     }
+// });
 
 export default router;

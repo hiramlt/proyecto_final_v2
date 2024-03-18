@@ -16,4 +16,9 @@ export default class UserDao {
     static update(uid, data) {
         return UserModel.updateOne({ _id: uid }, { $set: data });
     }
+
+    static async saveUser(user) {
+        await user.save();
+        return UserModel.findById(user._id);
+    }
 }

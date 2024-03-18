@@ -15,6 +15,7 @@ import { appLogger } from './utils/logger.js';
 import indexRouter from './routers/views/index.router.js';
 import testRouter from './routers/api/tests.router.js';
 import authRouter from './routers/api/auth.router.js';
+import usersRouter from './routers/api/users.router.js';
 import productsRouter from './routers/api/products.router.js';
 import cartsRouter from './routers/api/carts.router.js';
 
@@ -46,7 +47,7 @@ initPassport();
 app.use(passport.initialize());
 
 app.use('/', indexRouter, testRouter);
-app.use('/api', authRouter, productsRouter, cartsRouter);
+app.use('/api', authRouter, productsRouter, cartsRouter, usersRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use((error, req, res, next) => {
