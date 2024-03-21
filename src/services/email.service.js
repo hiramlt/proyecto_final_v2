@@ -22,6 +22,26 @@ export default class EmailService {
         })
     }
 
+    static sendAccountDeleteNotification(user) {
+        const subject = 'Cuenta eliminada'
+        const html = `<div>
+        <h1> Adios ${user.first_name} 😰</h1>  
+        <p> Debido a la falta de actividad en tu cuenta durante los utimos dos dias, 
+        esta ha sido eliminada, esperamos verte de vuelta pronto</p>  
+        </div>`
+        return this.sendEmail(user.email, subject, html)
+    }
+
+    static sendProductDeleteNotification(user, product) {
+        const subject = 'Producto eliminado'
+        const html = `<div>
+        <h1> Hola ${user.first_name}</h1>  
+        <p> Se te notifica que el producto <b>${product.title}</b> 
+        creado previamente por ti ha sido eliminado</p>  
+        </div>`
+        return this.sendEmail(user.email, subject, html)
+    }
+
     static sendPasswordRecovery(user) {
         const token = createPasswRecoveryToken(user)
 

@@ -1,8 +1,18 @@
 import UsersDTO from '../dto/users.dto.js';
+import UsersShortDTO from '../dto/users.short.dto.js';
 
 export default class UsersRepository {
     constructor(dao) {
         this.dao = dao;
+    }
+
+    async get(opts = {}) {
+        const users = await this.dao.get(opts);
+        const formatedUsers = users.map(user => {
+            return new UsersShortDTO(user)
+        });
+        
+        return formatedUsers;
     }
 
     async getByEmail(email) {
@@ -23,6 +33,14 @@ export default class UsersRepository {
 
     async saveUser(user) {
         return this.dao.saveUser(user);
+    }
+
+    async delete(limit_date) {
+        return this.dao.delete(limit_date);
+    }
+
+    async deleteById(uid) {
+        return this.dao.deleteById(uid);
     }
 
     getCurrentUser(user) {

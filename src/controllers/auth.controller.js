@@ -39,7 +39,8 @@ export default class AuthController {
  
         const user = await UsersService.getByEmail(email);
         if (user && isValidPassword(password, user.password)) {
-            await UsersService.update(user._id, { last_connection: Date.now().toString() })
+            const date = new Date()
+            await UsersService.update(user._id, { last_connection: date })
             token = createToken(user);
             return token;
         }

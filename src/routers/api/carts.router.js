@@ -80,10 +80,7 @@ router.delete('/carts/:cid/product/:pid', isAuth('api'), authRole('user', 'premi
 router.post('/carts/:cid/purchase', isAuth('api'), async (req, res, next) => {
     const { cid } = req.params;
     try {
-        const { ticket, unavailableProductsID } = await CartsController.purchase(cid, req.user.email);
-        if (unavailableProductsID.length > 0) {
-            return res.status(200).json({ticket: ticket, unavailableProducts: unavailableProductsID})
-        }
+        const ticket = await CartsController.purchase(cid, req.user.email);
         req.logger.info('Compra realizada exitosamente')
         res.status(200).json(ticket);  
     } catch (error) {

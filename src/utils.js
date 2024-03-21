@@ -9,6 +9,7 @@ import CustomError from './utils/errors.js';
 import ProductsController from './controllers/products.controller.js';
 import UsersService from './services/users.service.js';
 
+
 const __filename = url.fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
 

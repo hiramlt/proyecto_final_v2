@@ -7,7 +7,35 @@ const router = Router()
 
 router.use(isAuth('api'))
 
-router.post('/users/premium/:uid', authRole('user', 'premium'), async (req, res, next) => {
+router.get('/users/', async (req, res, next) => {
+    try {
+        const users = await UsersController.get()
+        res.status(200).json(users);
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.delete('/users/', async (req, res, next) => {
+    try {
+        await UsersController.delete()
+        res.status(204).end()
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.delete('/users/:uid', async (req, res, next) => {
+    const { uid } = req.params
+    try {
+        await UsersController.deleteById(uid)
+        res.status(204).end()
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.post('/users/premium/:uid', async (req, res, next) => {
     const { uid } = req.params;
     try {
         const user = await UsersController.updateRole(uid);

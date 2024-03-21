@@ -14,7 +14,7 @@ const UserSchema = new Schema({
   cart: { type: mongoose.Schema.Types.ObjectId, ref: 'carts', required: false },
   role: { type: String, default: 'user' },
   documents: { type: [DocumentItemShema], default: [] },
-  last_connection: { type: String, default: null }
+  last_connection: { type: Date, default: null }
 }, { timestamps: true });
 
 export default mongoose.model('users', UserSchema);

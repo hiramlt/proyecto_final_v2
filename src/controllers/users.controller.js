@@ -1,7 +1,34 @@
 import UsersService from '../services/users.service.js';
+import EmailService from '../services/email.service.js';
 import CustomError from '../utils/errors.js';
 
 export default class UsersController {
+    static get() {
+        return UsersService.get();
+    }
+
+    static async delete() {
+        let date = new Date(Date.now() - (1000 * 60 * 60 * 48));
+
+        const users = await UsersService.get({ last_connection: { $lt: date } });
+        if (users && users.length > 0) {
+            for (const user of users) {
+                await EmailService.sendAccountDeleteNotification(user)
+            }
+        }
+
+        return UsersService.delete(date.toISOString());
+    }
+
+    static async deleteById(uid) {
+        const user = UsersService.getById(uid);
+        if (!user) {
+            CustomError.create({ name: 'Not found', message: 'No se encontro el usuario', code: 5 })
+        }
+        
+        return UsersService.deleteById(uid);
+    }
+
     static async updateRole(uid) {
         const user = await UsersService.getById(uid);
         if (!user) {
@@ -42,6 +69,6 @@ export default class UsersController {
             })
         }
 
-        return await UsersService.getById(uid)
+        return UsersService.getById(uid)
     }
 }

@@ -101,13 +101,13 @@ export default class CartsController {
                 await ProductsService.update(product.product._id, { stock: product.product.stock - product.quantity });
             }  else {
                 unavailableProducts.push(product); 
-                unavailableProductsID.push({ product: product.product._id }); 
+                unavailableProductsID.push({ product: product.product._id, title: product.product.title }); 
             }
             
         }
 
         await CartsService.update(cid, unavailableProducts);
         const ticket = await TicketsService.create({code: uuidv4(), amount: amount, purchaser: purchaser})
-        return { ticket, unavailableProductsID };
+        return { ticket: ticket, unavailableProducts: unavailableProductsID };
     }
 }

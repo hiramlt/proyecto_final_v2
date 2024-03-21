@@ -1,6 +1,18 @@
 import { usersRepository } from '../repositories/index.js';
 
 export default class UsersService {
+    static get(opts = {}) { 
+        return usersRepository.get(opts);
+    }
+
+    static delete(limit_date) {
+        return usersRepository.delete(limit_date);
+    }
+
+    static deleteById(uid) {
+        return usersRepository.deleteById(uid);
+    }
+
     static getByEmail(email) {
         return usersRepository.getByEmail(email);
     }

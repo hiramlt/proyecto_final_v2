@@ -1,5 +1,7 @@
 import ProductsService from '../services/products.service.js';
 import UsersService from '../services/users.service.js';
+import EmailService from '../services/email.service.js';
+import config from '../config/config.js';
 import CustomError from '../utils/errors.js';
 
 export default class ProductsController {
@@ -65,6 +67,11 @@ export default class ProductsController {
         const product = await ProductsService.getById(pid);
         if (!product) {
             CustomError.create({ name: 'Not found', message: 'No se encontro el producto', code: 5 })
+        }
+
+        if (product.owner !== config.admin.email) {
+            const user = await UsersService.getByEmail(product.owner)
+            if (user) await EmailService.sendProductDeleteNotification(user, product)
         }
 
         return ProductsService.delete(pid);

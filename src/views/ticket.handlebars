@@ -1,0 +1,23 @@
+<article>
+    <h1>Se ha completado tu compra 💸</h1>
+    <hr>
+    <h4>Información de la compra:</h4>
+    <p>Código de compra: {{ purchase_info.code }}</p>
+    <p>Comprador: {{ purchase_info.purchaser }}</p>
+    <p>Total de la compra: $<strong> {{ purchase_info.amount }} </strong></p> <br>
+    <br>
+    <a href="/products">Volver</a>
+</article>
+
+{{#if products}}
+    <section>
+        <h5>Los siguientes productos no pudieron comprarse por falta de stock:</h5>
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            {{#each products}}
+                <article>
+                    <h6>{{ this.title }}</h6>
+                </article>
+            {{/each}}
+        </div>
+    </section>
+{{/if}}

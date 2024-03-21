@@ -1,5 +1,5 @@
 <article>
-    <form action="/api/auth/login" method="POST">
+    <form id="login-form">
         <header>
             <h2>Inicio de sesión</h2>
         </header>
@@ -9,8 +9,12 @@
         </section>
         <footer>
             <input type="submit" value="Ingresar">
-            <a href="/register">¿No tienes una cuenta? Registrate</a>
-            <a href="/recover-password">¿Olvidaste tu contraseña?</a>
+            <section style="width: 100%; display: flex; justify-content: space-between;">
+                <a href="/register">¿No tienes una cuenta? Registrate</a>
+                <a href="/recover-password">¿Olvidaste tu contraseña?</a>
+            </section>
         </footer>
     </form>
 </article>
+
+<script src="/js/login.js"></script>
