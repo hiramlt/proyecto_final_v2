@@ -1,4 +1,4 @@
-import config from "../../src/config/config.js";
+const domain = process.env.DOMAIN || 'http://localhost:8080'
 
 const registerForm = document.getElementById('register-form');
 
@@ -13,7 +13,7 @@ registerForm.addEventListener('submit', (event) => {
 })
 
 function registerUser(data) {
-    fetch(`${config.domain}/api/auth/register`, {
+    fetch(`${domain}/api/auth/register`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
