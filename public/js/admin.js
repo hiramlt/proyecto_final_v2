@@ -1,4 +1,4 @@
-const domain = process.env.DOMAIN || 'http://localhost:8080'
+const config = require('../../src/config/config.js')
 
 const closeBtn = document.getElementById('close-btn');
 const confirmBtn = document.getElementById('confirm-btn');
@@ -34,7 +34,7 @@ delete_btns.forEach(btn => {
 })
 
 function updateUserRole() {
-    fetch(`${domain}/api/users/premium/${updated_user_id}`, {
+    fetch(`${config.domain}/api/users/premium/${updated_user_id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'  
@@ -54,7 +54,7 @@ function updateUserRole() {
 }
 
 function deleteUser(user_id) {
-    fetch(`${domain}/api/users/${user_id}`, {
+    fetch(`${config.domain}/api/users/${user_id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'  

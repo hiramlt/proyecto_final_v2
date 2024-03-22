@@ -1,4 +1,4 @@
-const domain = process.env.DOMAIN || 'http://localhost:8080'
+const config = require('../../src/config/config.js')
 
 const passwordForm = document.getElementById('passw-form');
 
@@ -13,7 +13,7 @@ passwordForm.addEventListener('submit', (event) => {
 })
 
 function setPassword(data) {
-    fetch(`${domain}/api/auth/set-password`, {
+    fetch(`${config.domain}/api/auth/set-password`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

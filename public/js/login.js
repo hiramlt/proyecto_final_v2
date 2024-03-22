@@ -1,4 +1,4 @@
-const domain = process.env.DOMAIN || 'http://localhost:8080'
+const config = require('../../src/config/config.js')
 
 const loginForm = document.getElementById('login-form');
 
@@ -13,7 +13,7 @@ loginForm.addEventListener('submit', (event) => {
 })
 
 function login(data) {
-    fetch(`${domain}/api/auth/login`, {
+    fetch(`${config.domain}/api/auth/login`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
