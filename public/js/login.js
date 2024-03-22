@@ -1,4 +1,6 @@
-const config = require('../../src/config/config.js')
+let domain = window.location.href
+domain = domain.split('/login')[0]
+
 
 const loginForm = document.getElementById('login-form');
 
@@ -13,7 +15,7 @@ loginForm.addEventListener('submit', (event) => {
 })
 
 function login(data) {
-    fetch(`${config.domain}/api/auth/login`, {
+    fetch(`${domain}/api/auth/login`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

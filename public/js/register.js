@@ -1,4 +1,5 @@
-const config = require('../../src/config/config.js')
+let domain = window.location.href
+domain = domain.split('/register')[0]
 
 const registerForm = document.getElementById('register-form');
 
@@ -13,7 +14,7 @@ registerForm.addEventListener('submit', (event) => {
 })
 
 function registerUser(data) {
-    fetch(`${config.domain}/api/auth/register`, {
+    fetch(`${domain}/api/auth/register`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

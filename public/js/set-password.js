@@ -1,4 +1,6 @@
-const config = require('../../src/config/config.js')
+let domain = window.location.href
+domain = domain.split('/set-password')[0]
+
 
 const passwordForm = document.getElementById('passw-form');
 
@@ -13,7 +15,7 @@ passwordForm.addEventListener('submit', (event) => {
 })
 
 function setPassword(data) {
-    fetch(`${config.domain}/api/auth/set-password`, {
+    fetch(`${domain}/api/auth/set-password`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

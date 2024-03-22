@@ -1,4 +1,5 @@
-const config = require('../../src/config/config.js')
+let domain = window.location.href
+domain = domain.split('/products')[0]
 
 const closeBtn = document.getElementById('close-btn');
 const cartBtn = document.getElementById('nav-cart');
@@ -33,7 +34,7 @@ product_btns.forEach(btn => {
 });
 
 function addProduct(product_id, quantity){
-    fetch(`${config.domain}/api/carts/${cart_id}/product/${product_id}`, {
+    fetch(`${domain}/api/carts/${cart_id}/product/${product_id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'  

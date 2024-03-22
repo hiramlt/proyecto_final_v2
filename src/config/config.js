@@ -22,5 +22,4 @@ export default {
         port: process.env.EMAIL_PORT || '465'
     },
     env: process.env.ENV || 'development',
-    domain: process.env.DOMAIN || 'http://localhost:8080'
 }
