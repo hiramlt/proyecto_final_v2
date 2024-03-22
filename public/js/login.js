@@ -1,3 +1,5 @@
+import config from "../../src/config/config.js";
+
 const loginForm = document.getElementById('login-form');
 
 loginForm.addEventListener('submit', (event) => {
@@ -11,7 +13,7 @@ loginForm.addEventListener('submit', (event) => {
 })
 
 function login(data) {
-    fetch('http://localhost:8080/api/auth/login', {
+    fetch(`${config.domain}/api/auth/login`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

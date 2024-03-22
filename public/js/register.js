@@ -1,3 +1,5 @@
+import config from "../../src/config/config.js";
+
 const registerForm = document.getElementById('register-form');
 
 registerForm.addEventListener('submit', (event) => {
@@ -11,7 +13,7 @@ registerForm.addEventListener('submit', (event) => {
 })
 
 function registerUser(data) {
-    fetch('http://localhost:8080/api/auth/register', {
+    fetch(`${config.domain}/api/auth/register`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

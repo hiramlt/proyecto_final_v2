@@ -21,5 +21,6 @@ export default {
         service: process.env.EMAIL_SERVICE || 'gmail',
         port: process.env.EMAIL_PORT || '465'
     },
-    env: process.env.ENV || 'development'
+    env: process.env.ENV || 'development',
+    domain: process.env.DOMAIN || 'http://localhost:8080'
 }

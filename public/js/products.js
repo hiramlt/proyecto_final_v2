@@ -1,3 +1,5 @@
+import config from "../../src/config/config.js";
+
 const closeBtn = document.getElementById('close-btn');
 const cartBtn = document.getElementById('nav-cart');
 const cart_id = cartBtn.getAttribute('data-id');
@@ -31,7 +33,7 @@ product_btns.forEach(btn => {
 });
 
 function addProduct(product_id, quantity){
-    fetch(`http://localhost:8080/api/carts/${cart_id}/product/${product_id}`, {
+    fetch(`${config.domain}/api/carts/${cart_id}/product/${product_id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'  

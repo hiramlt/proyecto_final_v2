@@ -1,3 +1,5 @@
+import config from "../../src/config/config.js";
+
 const passwordForm = document.getElementById('passw-form');
 
 passwordForm.addEventListener('submit', (event) => {
@@ -11,7 +13,7 @@ passwordForm.addEventListener('submit', (event) => {
 })
 
 function setPassword(data) {
-    fetch('http://localhost:8080/api/auth/set-password', {
+    fetch(`${config.domain}/api/auth/set-password`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
