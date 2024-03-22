@@ -19,9 +19,13 @@ document.getElementById('nav-cart').addEventListener('click', () => {
     window.location.href = `/cart`;
 });
 
-document.getElementById('nav-admin').addEventListener('click', () => {
-    window.location.href = `/admin-panel`;
-});
+const admin_btn = document.getElementById('nav-admin')
+
+if (admin_btn) {
+    admin_btn.addEventListener('click', () => {
+        window.location.href = `/admin-panel`;
+    });
+}
 
 const product_btns = document.querySelectorAll('.btn-cart');
 product_btns.forEach(btn => {
